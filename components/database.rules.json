@@ -1,0 +1,20 @@
+{
+  "rules": {
+    ".read": true,
+    ".write": true,
+    "users": {
+      ".indexOn": ["referralCode"],
+      "$uid": {
+        // Only allow writing if not banned, unless the write is setting banned=true (Sentinel)
+        ".write": "auth != null && ($uid === auth.uid || root.child('users').child($uid).child('banned').val() !== true)",
+        "banned": {
+           // User cannot unban themselves
+           ".validate": "newData.val() === true || !data.exists()"
+        },
+        "balance": {
+           ".validate": "newData.isNumber()"
+        }
+      }
+    }
+  }
+}
